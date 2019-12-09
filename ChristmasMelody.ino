@@ -32,32 +32,6 @@ bool open()
   return analogRead(A0) > 950;
 }
 
-#define TAP_LENGTH 50
-#define UNTAP_LENGTH 3
-
-/*void waitForTap()
-{
-  int length;
-  do {
-    length = 0;
-    while (!closed());
-    for (int i = 0; i < TAP_LENGTH; i++) {
-      if (closed()) length++;
-    }
-  } while (length != TAP_LENGTH);
-}
-
-void waitForUntap()
-{
-  int length;
-  do {
-    while (closed());
-    for (int i = 0; i < UNTAP_LENGTH; i++) {
-      if (open()) length++;
-    }
-  } while (length != UNTAP_LENGTH);
-}*/
-
 void waitForTap()
 {
   while (!closed());
@@ -92,11 +66,11 @@ void play(int note, long duration) {
   int waitTime = 500000 / note;
   int numberOfCycles = (duration * note) / 1000;
   int i;
-  for (i = 0; i < numberOfCycles; i++) {
+  for (i = 0; (duration && i < numberOfCycles) || (!duration && !open()); i++) {
     digitalWrite(LOUDSPEAKER_PIN, HIGH);
     delayMicroseconds(waitTime);
     digitalWrite(LOUDSPEAKER_PIN, LOW);
-    delayMicroseconds(waitTime);
+    delayMicroseconds(waitTime); 
   }
   /********************************************************/
   pinMode(LOUDSPEAKER_PIN, INPUT);
@@ -121,15 +95,13 @@ void loop() {
      Play each note for 125ms.
   */
   
-  /*int note = 0;
+  int note = 0;
   while (melody[note]) {
     waitForTap(); // This line is added in the last step
-    Serial.print("tapped\n");
+    play(melody[note], 0);
     waitForUntap();
-    Serial.print("untapped\n");
-    play(melody[note], 250);
     note++;
-  }*/
+  }
   
   
   /********************************************************/
@@ -141,16 +113,4 @@ void loop() {
   Serial.print(" - ");
   Serial.print(digitalRead(LOUDSPEAKER_PIN));
   Serial.print("\n");*/
-
-  int i = 0;
-  while (true) {
-     Serial.print("\nWaiting");
-     waitForTap();
-     Serial.print("\nTap: ");
-     Serial.print(i);
-     waitForUntap();
-     Serial.print("\nUntap: ");
-     Serial.print(i);
-     i++;
-  }
 }
