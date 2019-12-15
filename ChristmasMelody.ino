@@ -43,12 +43,12 @@ bool isButtonUp()
 
 void waitForTap()
 {
-  while (!isButtonDown());
+  /* Dein Code hier */
 }
 
 void waitForUntap()
 {
-  while (!isButtonUp());
+  /* Dein Code hier */
 }
 
 /********************************************************/
@@ -128,5 +128,4 @@ void loop() {
    *
    * 2. Lösch den Code deiner LED und ruf statt dessen playMelody().
    */
-   playMelody();
 }
