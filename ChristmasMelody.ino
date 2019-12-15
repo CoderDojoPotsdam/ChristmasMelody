@@ -108,12 +108,6 @@ void playMelody() {
 
   int note = 0;
   while (melody[note] != 0) {  /* Am Ende der Melodie ist eine "0" */
-    waitForTap();
-    digitalWrite(LED_PIN, HIGH);
-    while (!isButtonUp())
-      play(melody[note], 100);
-    waitForUntap();
-    digitalWrite(LED_PIN, LOW);
     note++;
   }
 }
