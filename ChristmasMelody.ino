@@ -1,65 +1,68 @@
 #include "silent_night.h"
 
-/* This melody is defined in the header above. */
+/* Die Konstante MELODY wird in der oben eingebundenen Datei definiert */
 int const melody[] = MELODY;
 
-/********************************************************/
-/* 3.) Define a constant LOUDSPEAKER_PIN containing the 
-   number of the digital pin you just connected the 
-   "+" pin of your loudspeaker to.
- */
 #define LOUDSPEAKER_PIN 8
 #define LED_PIN 7
-/********************************************************/
 
-void play(int note, long duration);
+#define BUTTON_PIN A0
 
-/********************************************************/
-/* 7.) Define a new function waitForTap,
-   that does nothing until the analog port A0 has
-   some value greater than 10.
-   
-   Call that function just before you call play(int, long).
+/* Diese zwei Funktionen testen ob ein
+ * Knopf, der zwischen 3,3V dem PIN und
+ * dem A0-PIN angeschlossen ist gedrückt
+ * oder losgelassen ist.
+ *
+ * Wir müssen einen undefinierten Wertebereich
+ * ("Hysterese") lassen, da unsere Knöpfe sonst
+ * im Übergangsbereich "wackeln" würden.
+ *
  */
 
-bool isButtonPushed()
+bool isButtonDown()
 {
-  int val = analogRead(A0);
+  int val = analogRead(BUTTON_PIN);
   return val < 800;
 }
 
-bool isButtonReleased()
+bool isButtonUp()
 {
-  return analogRead(A0) > 950;
+  return analogRead(BUTTON_PIN) > 950;
 }
+
+/********************************************************/
+/* AUFGABE (EINSTIEG):
+ * Definiere zwei Funktionen, die solang warten, bis
+ * der Knopf gedrückt ist (waitForTap) oder losgelassen
+ * wurde (waitForUntap).
+ */
 
 void waitForTap()
 {
-  while (!isButtonPushed());
+  while (!isButtonDown());
 }
 
 void waitForUntap()
 {
-  while (!isButtonReleased());
+  while (!isButtonUp());
 }
 
 /********************************************************/
 
 void play(int note, long duration) {
   /********************************************************/
-  /* The variable note gives you a frequency in Hz.
-     The variable duration is given in milliseconds.
-
-     5.) Generate a rectangular wave with the given 
-     frequency and duration.
-     To do so, change the value at the loudspeaker pin
-     to HIGH and to LOW for a sufficient number of
-     times and wait an appropriate time after you set
-     each value.
-
-     Hint: Think about the resolutions you need!
-     You may want to use more percise functions than the
-     ones from the LEDFlash example.
+  /* AUFGABE (FÜR FORTGESCHRITTENE):
+   * Generiere eine Rechteckschwingung.
+   *
+   * Der Parameter "note" gibt die Tonfrequenz in Hz.
+   * Der Parameter "duration" gibt die Spielzeit in Millisekunden an.
+   *
+   * Ändere mit digitalWrite ausreichend oft den Wert am
+   * Lautsprecher-PIN von HIGH zu LOW low. Warte nach jedem
+   * Wechsel für eine passende Zeitlänge mit delayMicroseconds.
+   *
+   * Tipp: Recherchiere ob mit Arduinos noch einfacher
+   * eine "Pulsweitenmodulation" zu realisieren ist.
    */
 
   int waitTime = 500000 / note;
@@ -71,38 +74,55 @@ void play(int note, long duration) {
     digitalWrite(LOUDSPEAKER_PIN, LOW);
     delayMicroseconds(waitTime);
   }
-  /********************************************************/
 }
 
-/* the setup routine runs once when you press reset: */
+/* Diese Methode wird beim Start (oder Reset) einmal ausgeführt */
 void setup() {
   pinMode(LOUDSPEAKER_PIN, OUTPUT);
   pinMode(LED_PIN, OUTPUT);
-  pinMode(A0, INPUT_PULLUP);
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
 
   Serial.begin(9600);
 }
 
-/* the loop routine runs over and over again forever: */
-void loop() {
+
+void playMelody() {
   /********************************************************/
-  /* 4.) Look at the included melody.
-     How can you determine how long it is?
-     
-     Call play(int, long) with each note in the melody.
-     Play each note for 125ms.
-  */
+  /* AUFGABEN (MITTEL):
+   *
+   * 1. Spiele die Melodie, indem du jeden Ton aus "melody"
+   * für 100ms anspielst.
+   *
+   * 2. Warte mit dem Tonbeginn solang, bis der Knopf gedrückt wurde.
+   *
+   * 3. Halte den Ton solang, wie der Knopf gedrückt ist.
+   * Tipp: Du kannst den Ton immer neustarten, solang der Knopf nicht
+   * losgelassen wurde.
+   *
+   * 4. Schalte die LED an wenn ein Ton beginnt und aus, sobald er aufhört.
+   */
 
   int note = 0;
-  while (melody[note]) {
+  while (melody[note] != 0) {  /* Am Ende der Melodie ist eine "0" */
     waitForTap(); // This line is added in the last step
     digitalWrite(LED_PIN, HIGH);
-    while (!isButtonReleased())
+    while (!isButtonUp())
       play(melody[note], 100);
     waitForUntap();
     digitalWrite(LED_PIN, LOW);
     note++;
   }
-  
-  /********************************************************/
+}
+
+/* Diese Methode wird immer und immer wieder ausgeführt. */
+void loop() {
+  /* AUFGABE (EINSTIEG):
+   *
+   * 1. Lass die LED mit "digitalWrite(LED_PIN, HIGH)"
+   * leuchten, sobald der Knopf gedrückt wurde.
+   * Schalte sie aus (= LOW) wenn der Knopf losgelassen wurde.
+   *
+   * 2. Lösch den Code deiner LED und ruf statt dessen playMelody().
+   */
+   playMelody();
 }
