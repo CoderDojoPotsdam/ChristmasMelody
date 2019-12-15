@@ -9,6 +9,7 @@ int const melody[] = MELODY;
    "+" pin of your loudspeaker to.
  */
 #define LOUDSPEAKER_PIN 8
+#define LED_PIN 7
 /********************************************************/
 
 void play(int note, long duration);
@@ -45,8 +46,6 @@ void waitForUntap()
 /********************************************************/
 
 void play(int note, long duration) {
-  pinMode(LOUDSPEAKER_PIN, OUTPUT);
-
   /********************************************************/
   /* The variable note gives you a frequency in Hz.
      The variable duration is given in milliseconds.
@@ -66,23 +65,22 @@ void play(int note, long duration) {
   int waitTime = 500000 / note;
   int numberOfCycles = (duration * note) / 1000;
   int i;
-  for (i = 0; (duration && i < numberOfCycles) || (!duration && !open()); i++) {
+  for (i = 0; i < numberOfCycles; i++) {
     digitalWrite(LOUDSPEAKER_PIN, HIGH);
     delayMicroseconds(waitTime);
     digitalWrite(LOUDSPEAKER_PIN, LOW);
-    delayMicroseconds(waitTime); 
+    delayMicroseconds(waitTime);
   }
   /********************************************************/
-  pinMode(LOUDSPEAKER_PIN, INPUT);
 }
 
 /* the setup routine runs once when you press reset: */
 void setup() {
-  pinMode(LOUDSPEAKER_PIN, INPUT);
+  pinMode(LOUDSPEAKER_PIN, OUTPUT);
+  pinMode(LED_PIN, OUTPUT);
 
   Serial.begin(9600);
   pinMode(A0, INPUT_PULLUP);
-
 }
 
 /* the loop routine runs over and over again forever: */
@@ -94,23 +92,17 @@ void loop() {
      Call play(int, long) with each note in the melody.
      Play each note for 125ms.
   */
-  
+
   int note = 0;
   while (melody[note]) {
     waitForTap(); // This line is added in the last step
-    play(melody[note], 0);
+    digitalWrite(LED_PIN, HIGH);
+    while (!open())
+      play(melody[note], 100);
     waitForUntap();
+    digitalWrite(LED_PIN, LOW);
     note++;
   }
   
-  
   /********************************************************/
-
-
-  /*int sum = analogRead(A0);
- 
-  Serial.print(sum);
-  Serial.print(" - ");
-  Serial.print(digitalRead(LOUDSPEAKER_PIN));
-  Serial.print("\n");*/
 }
