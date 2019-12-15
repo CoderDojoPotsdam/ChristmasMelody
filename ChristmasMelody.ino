@@ -22,25 +22,25 @@ void play(int note, long duration);
    Call that function just before you call play(int, long).
  */
 
-bool closed()
+bool isButtonPushed()
 {
   int val = analogRead(A0);
   return val < 800;
 }
 
-bool open()
+bool isButtonReleased()
 {
   return analogRead(A0) > 950;
 }
 
 void waitForTap()
 {
-  while (!closed());
+  while (!isButtonPushed());
 }
 
 void waitForUntap()
 {
-  while (!open());
+  while (!isButtonReleased());
 }
 
 /********************************************************/
@@ -78,9 +78,9 @@ void play(int note, long duration) {
 void setup() {
   pinMode(LOUDSPEAKER_PIN, OUTPUT);
   pinMode(LED_PIN, OUTPUT);
+  pinMode(A0, INPUT_PULLUP);
 
   Serial.begin(9600);
-  pinMode(A0, INPUT_PULLUP);
 }
 
 /* the loop routine runs over and over again forever: */
@@ -97,7 +97,7 @@ void loop() {
   while (melody[note]) {
     waitForTap(); // This line is added in the last step
     digitalWrite(LED_PIN, HIGH);
-    while (!open())
+    while (!isButtonReleased())
       play(melody[note], 100);
     waitForUntap();
     digitalWrite(LED_PIN, LOW);
