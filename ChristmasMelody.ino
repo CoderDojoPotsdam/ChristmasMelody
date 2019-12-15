@@ -68,16 +68,6 @@ void play(int note, long duration) {
    * Tipp: Recherchiere ob mit Arduinos noch einfacher
    * eine "Pulsweitenmodulation" zu realisieren ist.
    */
-
-  int waitTime = 500000 / note;
-  int numberOfCycles = (duration * note) / 1000;
-  int i;
-  for (i = 0; i < numberOfCycles; i++) {
-    digitalWrite(LOUDSPEAKER_PIN, HIGH);
-    delayMicroseconds(waitTime);
-    digitalWrite(LOUDSPEAKER_PIN, LOW);
-    delayMicroseconds(waitTime);
-  }
 }
 
 /* Diese Methode wird beim Start (oder Reset) einmal ausgeführt */
@@ -95,7 +85,7 @@ void playMelody() {
   /* AUFGABEN (MITTEL):
    *
    * 1. Spiele die Melodie, indem du jeden Ton aus "melody"
-   * für 100ms anspielst.
+   * für 100ms anspielst. Woran erkennst du das Ende einer Melodie im Header?
    *
    * 2. Warte mit dem Tonbeginn solang, bis der Knopf gedrückt wurde.
    *
@@ -106,10 +96,6 @@ void playMelody() {
    * 4. Schalte die LED an wenn ein Ton beginnt und aus, sobald er aufhört.
    */
 
-  int note = 0;
-  while (melody[note] != 0) {  /* Am Ende der Melodie ist eine "0" */
-    note++;
-  }
 }
 
 /* Diese Methode wird immer und immer wieder ausgeführt. */
