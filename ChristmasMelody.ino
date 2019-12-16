@@ -17,17 +17,21 @@ int const melody[] = MELODY;
  * ("Hysterese") lassen, da unsere Knöpfe sonst
  * im Übergangsbereich "wackeln" würden.
  *
+ * Für den offiziellen Arduino Uno hat der
+ * Wertebereich 800-950 gut funktioniert.
+ *
+ * Für den ELEGOO Uno R3 nimm 980-1005.
  */
 
 bool isButtonDown()
 {
   int val = analogRead(BUTTON_PIN);
-  return val < 800;
+  return val < 980;
 }
 
 bool isButtonUp()
 {
-  return analogRead(BUTTON_PIN) > 950;
+  return analogRead(BUTTON_PIN) > 1005;
 }
 
 /********************************************************/
@@ -104,7 +108,7 @@ void playMelody() {
 
   int note = 0;
   while (melody[note] != 0) {  /* Am Ende der Melodie ist eine "0" */
-    waitForTap(); // This line is added in the last step
+    waitForTap();
     digitalWrite(LED_PIN, HIGH);
     while (!isButtonUp())
       play(melody[note], 100);
