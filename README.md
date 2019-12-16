@@ -2,7 +2,7 @@
 
 Bau deinen eigenen blinkenden, musizierenden Weihnachtskasten.
 
-![Schaubild Musikkasten](https://i.imgur.com/Qb8J9sF.jpg =250x)
+![Schaubild Musikkasten](https://i.imgur.com/Qb8J9sF.jpg)
 
 Ein Projekt des [CoderDojo Potsdam](https://coderdojopotsdam.github.io/) und des [ChaosTreff Potsdam](https://www.ccc-p.org) zum gemeinsamen Löten und Basteln in der Adventszeit.
 
